@@ -4,24 +4,26 @@ import HomePage from './pages/homePage.jsx'
 import RegisterPage from './pages/registerPage.jsx'
 import LoginPage from './pages/loginPage.jsx'
 import AdminPage from './pages/adminPage.jsx'
-import TestPage from './pages/testPage.jsx'
 import toast, { Toaster } from 'react-hot-toast';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 
 function App() {
   return (
     
-    
-    <div className="w-full h-screen bg-red-500">
+    <GoogleOAuthProvider clientId="849594857218-6vqe05dqqtaqe1h0opfqjj87iekdgqr1.apps.googleusercontent.com">
+    <div className="w-full h-screen ">
       <Toaster position='top-right'/>
       <Routes>
         <Route path="/*" element={<HomePage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />  
         <Route path="/admin/*" element={<AdminPage />} />
-        <Route path="/test" element= {<TestPage />} /> 
+        
       </Routes >
     </div> 
+
+    </GoogleOAuthProvider>
    
     // <>
     //   <h1 className="text-[4rem ] font-bold text-cen   ter text-red-500">Welcome to React</h1>

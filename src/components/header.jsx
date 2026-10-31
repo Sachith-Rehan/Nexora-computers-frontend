@@ -16,6 +16,7 @@ import {
   FiGrid,
   FiArrowRight,
 } from "react-icons/fi";
+import UserData from "./userData";
 
 const categories = [
   { label: "Laptops", value: "laptop" },
@@ -195,6 +196,9 @@ export default function Header({ cartCount = 0 }) {
             {mobileSearchOpen ? <FiX size={20} /> : <FiSearch size={20} />}
           </button>
 
+          <Link>
+            <UserData/>
+          </Link>   
           <Link
             to="/cart"
             aria-label={`Shopping cart, ${itemCount} items`}

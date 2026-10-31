@@ -5,16 +5,38 @@ import { MdEmail, MdPassword } from "react-icons/md";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate} from "react-router-dom";
 import api from "../utils/api";
+import { useGoogleLogin } from "@react-oauth/google";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+ 
+  const googleLogin = useGoogleLogin({
+      onSuccess: async (response) => {
+      console.log(response);
+
+      const res = await api.post("/users/google-login", {
+        accessToken: response.access_token
+      });
+
+      localStorage.setItem("token", res.data.token);
+
+      if (res.data.isAdmin == true) {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+  },
+  onError: (err) => {
+    console.log(err);
+  }
+});
 
   async function handleLogin() {
     // Optional: Keep toast for debugging, or remove for production
-    // toast.success("Email:" + email + " Password:" + password);
+    // toast.success("Email:" + email + "Password:" + password);
     if(!email || !password){
         toast.error("Please fill in all fields")
         return
@@ -112,7 +134,7 @@ export default function LoginPage() {
         </div>
 
         {/* Google Sign In */}
-        <button className="w-full h-11 bg-white hover:bg-gray-100 text-gray-800 rounded-lg font-semibold text-[16px] flex items-center justify-center gap-2 transition-colors shadow-lg">
+        <button onClick={googleLogin} className="w-full h-11 bg-white hover:bg-gray-100 text-gray-800 rounded-lg font-semibold text-[16px] flex items-center justify-center gap-2 transition-colors shadow-lg">
           <FaGoogle className="text-red-500" />
           Sign in with Google
         </button>

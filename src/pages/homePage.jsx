@@ -5,9 +5,10 @@ import ProductOverViewPage from "./productOverViewPage";
 import CartPage from "./cartPage";
 import CheckoutPage from "./checkoutPage";
 import Footer from "../components/footer";
-import HomeSlideShow from "../components/homePageSlideShow";
 import UserHomePage from "./userHomePage";
 import ContactUsPage from "./conatactUsPage";
+import Settings from "../components/settings";
+import MyOrders from "../components/myOrders";
 
 export default function HomePage() {
   return (
@@ -24,6 +25,8 @@ export default function HomePage() {
               <Route path="/cart" element={<CartPage/>}/>
               <Route path="/checkout" element={<CheckoutPage/>}/>
               <Route path="/overview/:productId" element={<ProductOverViewPage/>}/>
+              <Route path="/settings" element={<Settings/>}/>
+              <Route path="/my-orders" element={<MyOrders/>}/>
               <Route path="/*" element={<p>404 page</p>}/>
             </Routes>
         </div>

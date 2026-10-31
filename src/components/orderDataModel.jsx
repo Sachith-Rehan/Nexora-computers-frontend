@@ -17,7 +17,7 @@ const STATUS_STYLES = {
 };
 
 
-export default function OrderDataModel({ order, onStatusChange  }) {
+export default function OrderDataModel({ isAdmin, order, onStatusChange  }) {
 
       const [isModelOpen, setModelOpen] = useState(false);
       const [copied, setCopied] = useState(false);
@@ -381,8 +381,11 @@ export default function OrderDataModel({ order, onStatusChange  }) {
                                                                   <label className="block text-xs text-gray-400 uppercase font-semibold mb-2">
                                                                         Order Status
                                                                   </label>
-
-
+                                                                  
+                                                                  {isAdmin && 
+                                                                  
+                                                                  
+                                                                  
                                                                   <select value={status} disabled={statusUpdating} onChange={(e) => updateOrderStatus(e.target.value)} className="w-full border border-gray-300 bg-white rounded-lg px-3 py-2.5 text-sm font-semibold text-gray-700 outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
 
                                                                         <option value="pending">
@@ -413,7 +416,7 @@ export default function OrderDataModel({ order, onStatusChange  }) {
                                                                               Returned
                                                                         </option>
 
-                                                                  </select>
+                                                                  </select>}
 
 
                                                                   {statusUpdating && (

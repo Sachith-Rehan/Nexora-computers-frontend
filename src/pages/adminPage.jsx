@@ -23,6 +23,10 @@ import AdminUserPage from "./admin/adminUsersPage";
 import AdminAddProductForm from "./admin/adminAddProductForm";
 import AdminEditProductForm from "./admin/adminEditProductForm";
 import AdminOrdersPage from "./admin/adminOrderPage";
+import toast from "react-hot-toast";
+import LoadingScreen from "../components/loadingScreen";
+
+
 
 const menuItems = [
   {
@@ -43,26 +47,45 @@ const menuItems = [
 ];
 
 export default function AdminPage() {
+  const [user, setUser] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    if (!token) {
-      navigate("/login", { replace: true });
+  useEffect(
+    () => {
+      const token = localStorage.getItem("token")
+      
+      if(token == null){
+        navigate("/")
+      }
+
+      if(token != null){
+        api.post("/users/me", {
+          headers : {
+            "Authorization" : `Bearer ${token}`
+          }
+        }).then((res)=>{
+            setUser(res.data)
+          }
+        ).catch( ()=> {
+          toast.error("You are not authorized")
+          navigate("/")
+          }
+        )
+      }
     }
-  }, [token, navigate]);
+  )
 
-  if (!token) {
-    return null;
-  }
+  
 
   const handleCloseSidebar = () => {
     setIsSidebarOpen(false);
   };
 
   return (
+
+    
     <div className="w-full h-screen flex bg-primary overflow-hidden">
 
       {/* Mobile Header */}
@@ -232,6 +255,8 @@ export default function AdminPage() {
         bg-primary p-4 pt-20 md:pt-4
         overflow-y-auto"
       >
+
+        {user == null ? <LoadingScreen/> :
         <Routes>
           <Route
             index
@@ -263,6 +288,7 @@ export default function AdminPage() {
             element={<AdminEditProductForm />}
           />
         </Routes>
+        }
       </main>
     </div>
   );
