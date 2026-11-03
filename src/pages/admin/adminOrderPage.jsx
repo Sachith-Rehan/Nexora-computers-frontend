@@ -126,6 +126,7 @@ export default function AdminOrdersPage() {
                                     <th className="px-4 py-3">City </th>
                                     <th className="px-4 py-3">Phone</th>
                                     <th className="px-4 py-3">Status</th>
+                                    <th className="px-4 py-3">Payment</th>
                                     <th className="px-4 py-3">Date</th>
                                     <th className="px-4 py-3">Total Amount</th>
                                     <th className="px-4 py-3 text-center">Action</th>
@@ -142,6 +143,11 @@ export default function AdminOrdersPage() {
                                     <td className="px-4 py-3 font-semibold text-gray-800">{order.city}</td>
                                     <td className="px-4 py-3 text-gray-600 ">{order.phone}</td>
                                     <td className="px-4 py-3 text-gray-600"><OrderStatusBadge status={order.status} /></td>
+                                    <td className="px-4 py-3 text-gray-600">
+                                          {order.paymentMethod === "bank_transfer"
+                                                ? `Bank transfer · ${order.paymentStatus.replaceAll("_", " ")}`
+                                                : "Cash on delivery"}
+                                    </td>
                                     <td className="px-4 py-3 text-gray-600">{formatDateTime(order.date)}</td> 
                                     <td className="px-4 py-3 text-center font-semibold text-gray-700">{getFormattedPrice(order.totalAmount)}</td>
                                     <td className="px-4 py-3 text-center">

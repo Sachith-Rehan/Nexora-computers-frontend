@@ -28,7 +28,7 @@ export default function CustomToast({ t, type, message }) {
                 </div>
 
                 {/* Text */}
-                <div className="flex-1 min-w-0">
+                <div {...t.ariaProps} className="flex-1 min-w-0">
                     <p className="text-[15px] font-semibold text-gray-900">
                         {isSuccess ? "Success" : "Error"}
                     </p>
@@ -40,6 +40,7 @@ export default function CustomToast({ t, type, message }) {
                 {/* Close */}
                 <button
                     type="button"
+                    aria-label="Dismiss notification"
                     onClick={closeToast}
                     className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                 >

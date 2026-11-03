@@ -1,3 +1,4 @@
+import OrderPayment from "./orderPayment";
 import { useEffect, useRef, useState } from "react";
 import { FaEye, FaTimes, FaCopy, FaCheck, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaBoxOpen, FaUser } from "react-icons/fa";
 
@@ -363,6 +364,7 @@ export default function OrderDataModel({ isAdmin, order, onStatusChange  }) {
 
 
 
+                                                            <OrderPayment order={order} isAdmin={isAdmin} onChange={onStatusChange} />
                                                             {/* Update Status */}
                                                             <div>
 
@@ -380,19 +382,19 @@ export default function OrderDataModel({ isAdmin, order, onStatusChange  }) {
                                                                               Pending
                                                                         </option>
 
-                                                                        <option value="processing">
+                                                                        <option value="processing" disabled={order.paymentMethod === "bank_transfer" && order.paymentStatus !== "paid"}>
                                                                               Processing
                                                                         </option>
 
-                                                                        <option value="shipped">
+                                                                        <option value="shipped" disabled={order.paymentMethod === "bank_transfer" && order.paymentStatus !== "paid"}>
                                                                               Shipped
                                                                         </option>
 
-                                                                        <option value="delivered">
+                                                                        <option value="delivered" disabled={order.paymentMethod === "bank_transfer" && order.paymentStatus !== "paid"}>
                                                                               Delivered
                                                                         </option>
 
-                                                                        <option value="completed">
+                                                                        <option value="completed" disabled={order.paymentMethod === "bank_transfer" && order.paymentStatus !== "paid"}>
                                                                               Completed
                                                                         </option>
 
@@ -400,7 +402,7 @@ export default function OrderDataModel({ isAdmin, order, onStatusChange  }) {
                                                                               Cancelled
                                                                         </option>
 
-                                                                        <option value="returned">
+                                                                        <option value="returned" disabled={order.paymentMethod === "bank_transfer" && order.paymentStatus !== "paid"}>
                                                                               Returned
                                                                         </option>
 

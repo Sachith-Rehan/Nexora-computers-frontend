@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import api from "../utils/api";
+import OrderPayment from "../components/orderPayment";
 
 import getCart, { getTotal } from "../utils/cart";
 import getFormattedPrice from "../utils/priceFormatter";
@@ -7,6 +10,7 @@ import {
   FiShoppingBag,
   FiShield,
   FiTruck,
+  FiCreditCard,
   FiCheck,
   FiLock,
   FiPackage,
@@ -25,6 +29,71 @@ export default function CheckoutPage() {
     : getCart() || [];
 
   const total = getTotal(cart);
+
+  const [settings, setSettings] = useState(null);
+  const [settingsError, setSettingsError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const [placedOrder, setPlacedOrder] = useState(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    setSettingsError(false);
+    api.get("/orders/checkout-settings", { signal: controller.signal })
+      .then(({ data }) => { if (!controller.signal.aborted) setSettings(data); })
+      .catch(() => { if (!controller.signal.aborted) setSettingsError(true); });
+    return () => controller.abort();
+  }, [attempt]);
+  const finalTotal = settings && Math.round((total + settings.deliveryFee) * 100) / 100;
+  const [choice, setChoice] = useState("cod");
+  const requiresTransfer = settings && finalTotal >= settings.transferThreshold;
+  const transfer = requiresTransfer || (settings?.transfersEnabled && choice === "bank_transfer");
+  if (placedOrder) return (
+    <main className="min-h-screen bg-[#0b0e14] px-5 py-16 text-white">
+      <div className="mx-auto max-w-lg space-y-6">
+        <h1 className="text-2xl font-semibold">Order placed</h1>
+        <p>Order {placedOrder.orderId}</p>
+        <OrderPayment order={placedOrder} />
+        <Link to="/my-orders" className="inline-block text-blue-400 underline">View my orders</Link>
+      </div>
+    </main>
+  );
+
+  const paymentOptions = settings && (
+    <fieldset className="mt-6 space-y-2 text-sm">
+      <legend className="mb-2 font-semibold">How would you like to pay?</legend>
+      {[
+        {
+          value: "cod", title: "Cash on delivery", Icon: FiTruck,
+          available: !requiresTransfer,
+          detail: requiresTransfer
+            ? `Available for totals below ${getFormattedPrice(settings.transferThreshold)}.`
+            : "Pay in cash when your order arrives.",
+        },
+        {
+          value: "bank_transfer", title: "Bank transfer", Icon: FiCreditCard,
+          available: settings.transfersEnabled,
+          detail: settings.transfersEnabled
+            ? "Place your order, then transfer the amount and upload your receipt."
+            : "Bank transfers are currently unavailable.",
+        },
+      ].map(({ value, title, Icon, available, detail }) => {
+        const selected = available && value === (transfer ? "bank_transfer" : "cod");
+        return (
+          <label key={value} className="block">
+            <input type="radio" name="payment" value={value} checked={selected} disabled={!available}
+              onChange={() => setChoice(value)} className="peer sr-only" />
+            <span className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/15 p-4 hover:border-white/40 peer-checked:border-blue-400 peer-checked:bg-blue-500/10 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-blue-400 peer-disabled:cursor-not-allowed peer-disabled:opacity-60">
+              <Icon aria-hidden="true" className="mt-0.5 shrink-0 text-lg" />
+              <span className="flex-1">
+                <span className="block font-semibold">{title}</span>
+                <span className="mt-1 block text-xs leading-5 text-zinc-300">{detail}</span>
+              </span>
+              {selected && <FiCheck aria-hidden="true" className="shrink-0 text-lg text-blue-400" />}
+            </span>
+          </label>
+        );
+      })}
+    </fieldset>
+  );
 
   const totalItems = cart.reduce(
     (sum, item) => sum + Number(item.qty || 0),
@@ -269,8 +338,7 @@ export default function CheckoutPage() {
                     </h3>
 
                     <p className="mt-2 text-xs leading-6 text-zinc-400">
-                      Delivery details and charges will be
-                      confirmed during order processing.
+                      The order total includes the delivery charge shown at checkout.
                     </p>
                   </div>
                 </div>
@@ -342,7 +410,7 @@ export default function CheckoutPage() {
                       </span>
 
                       <span className="text-right text-xs text-zinc-400">
-                        Calculated later
+                        {settings ? getFormattedPrice(settings.deliveryFee) : "—"}
                       </span>
                     </div>
                   </div>
@@ -354,22 +422,26 @@ export default function CheckoutPage() {
 
                     <div>
                       <p className="text-base font-semibold text-white">
-                        Subtotal
+                        Order total
                       </p>
 
                       <p className="mt-1 text-xs text-zinc-500">
-                        Excluding delivery charges
+                        {settings && (transfer ? "Manual bank transfer" : "Cash on delivery")}
                       </p>
                     </div>
 
                     <p className="text-2xl font-bold tracking-tight text-blue-400">
-                      {getFormattedPrice(total)}
+                      {settings ? getFormattedPrice(finalTotal) : "—"}
                     </p>
                   </div>
 
+                  {paymentOptions}
                   {/* CREATE ORDER COMPONENT */}
                   <div className="mt-7">
-                    <CreateOrder cart={cart} />
+                    {settingsError ? <button onClick={() => setAttempt(n => n + 1)}>Could not load payment options. Try again</button>
+                      : !settings ? <p role="status">Loading payment options…</p>
+                      : transfer && !settings.transfersEnabled ? <p role="status">This order requires a bank transfer. Bank transfer details are currently unavailable.</p>
+                      : <CreateOrder cart={cart} expectedTotal={finalTotal} paymentMethod={transfer ? "bank_transfer" : "cod"} onPlaced={setPlacedOrder}>{paymentOptions}</CreateOrder>}
                   </div>
 
                   {/* CHECKOUT NOTE */}

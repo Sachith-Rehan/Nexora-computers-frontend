@@ -5,7 +5,8 @@ import HomePage from './pages/homePage.jsx'
 import RegisterPage from './pages/registerPage.jsx'
 import LoginPage from './pages/loginPage.jsx'
 import AdminPage from './pages/adminPage.jsx'
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster, resolveValue } from 'react-hot-toast';
+import CustomToast from './components/customToast';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 
@@ -20,7 +21,9 @@ function App() {
     
     <GoogleOAuthProvider clientId="849594857218-6vqe05dqqtaqe1h0opfqjj87iekdgqr1.apps.googleusercontent.com">
     <div className="w-full h-screen ">
-      <Toaster position='top-right'/>
+      <Toaster position="top-right" toastOptions={{ success: { duration: 3000 }, error: { duration: 4000 } }}>
+        {t => <CustomToast t={t} type={t.type} message={resolveValue(t.message, t)} />}
+      </Toaster>
       <Routes>
         <Route path="/*" element={<HomePage />} />
         <Route path="/register" element={<RegisterPage />} />

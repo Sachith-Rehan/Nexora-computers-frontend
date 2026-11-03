@@ -26,7 +26,7 @@ const initialForm = {
   city: "",
 };
 
-export default function CreateOrder({ cart = [] }) {
+export default function CreateOrder({ cart = [], expectedTotal, paymentMethod, onPlaced, children }) {
   const navigate = useNavigate();
 
   const [isModalOpen, setModalOpen] = useState(false);
@@ -167,7 +167,7 @@ export default function CreateOrder({ cart = [] }) {
       addressLine2: addressLine2.trim(),
       city: city.trim(),
       phone: normalizedPhone,
-      items,
+      items, expectedTotal, paymentMethod,
     };
 
     try {
@@ -183,14 +183,15 @@ export default function CreateOrder({ cart = [] }) {
           }
         : {};
 
-      await api.post("/orders", body, config);
+      const { data } = await api.post("/orders", body, config);
 
       toast.success("Order placed successfully!");
 
       setModalOpen(false);
       setForm(initialForm);
 
-      navigate("/");
+      if (data.order?.paymentMethod === "bank_transfer") onPlaced(data.order);
+      else navigate("/");
     } catch (error) {
       console.error("Error placing order:", error);
 
@@ -486,6 +487,8 @@ export default function CreateOrder({ cart = [] }) {
                   </div>
                 </section>
 
+                <fieldset disabled={loading}>{children}</fieldset>
+
                 {/* FORM NOTE */}
                 <div className="flex items-start gap-3 rounded-xl border border-blue-500/10 bg-[#101b2d] p-4">
                   <FiLock className="mt-0.5 shrink-0 text-lg text-blue-400" />
@@ -493,8 +496,7 @@ export default function CreateOrder({ cart = [] }) {
                   <p className="text-xs leading-6 text-zinc-400">
                     Please double-check your contact information
                     and delivery address before placing your
-                    order. Delivery costs will be confirmed
-                    separately.
+                    order. {paymentMethod === "bank_transfer" ? "After placing the order, use the bank details provided. You can upload your receipt immediately or later in My Orders." : "Pay when your order arrives."}
                   </p>
                 </div>
               </form>
@@ -523,7 +525,7 @@ export default function CreateOrder({ cart = [] }) {
                     </>
                   ) : (
                     <>
-                      Confirm Order
+                      {paymentMethod === "bank_transfer" ? "Place bank transfer order" : "Place cash on delivery order"}
                       <FiArrowRight className="text-lg" />
                     </>
                   )}
