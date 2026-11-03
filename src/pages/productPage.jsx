@@ -461,7 +461,7 @@ const filteredProducts = useMemo(() => {
           <div className="flex flex-col gap-8 lg:flex-row lg:gap-10">
 
             {/* DESKTOP SIDEBAR */}
-            <aside className="hidden w-[250px] shrink-0 lg:block xl:w-[270px]">
+            <aside className="sticky top-32 hidden max-h-[calc(100dvh-9rem)] w-[250px] shrink-0 self-start overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:block xl:w-[270px]">
               <div className="border border-white/10 bg-[#111318] p-6">
                 {filterSidebar}
               </div>

@@ -6,15 +6,7 @@ import api from "../utils/api";
 import toast from "react-hot-toast";
 
 
-const STATUS_STYLES = {
-      pending: "bg-yellow-100 text-yellow-700",
-      processing: "bg-blue-100 text-blue-700",
-      shipped: "bg-purple-100 text-purple-700",
-      delivered: "bg-green-100 text-green-700",
-      completed: "bg-green-100 text-green-700",
-      cancelled: "bg-red-100 text-red-700",
-      returned: "bg-red-100 text-red-700",
-};
+import OrderStatusBadge from "./orderStatusBadge";
 
 
 export default function OrderDataModel({ isAdmin, order, onStatusChange  }) {
@@ -46,8 +38,6 @@ export default function OrderDataModel({ isAdmin, order, onStatusChange  }) {
       const otherCharges = Number(order.totalAmount) - itemsTotal;
 
 
-      // Status colour
-      const statusStyle = STATUS_STYLES[status?.toLowerCase()] || "bg-gray-100 text-gray-700";
 
 
       // Update local status when order prop changes
@@ -202,9 +192,7 @@ export default function OrderDataModel({ isAdmin, order, onStatusChange  }) {
 
 
                                                       {/* Status Badge */}
-                                                      <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${statusStyle}`}>
-                                                            {status}
-                                                      </span>
+                                                      <OrderStatusBadge status={status} />
 
                                                 </div>
 

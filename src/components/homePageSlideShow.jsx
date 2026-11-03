@@ -3,9 +3,9 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 export default function HomeSlideShow() {
       const images = [
-            "nexora-banner-03-premium-computing.svg",
+            "/Nexora Computers Neon Tech Showcase.png",
             "asus-geforce-rtx40-super-series.jpg",
-            "nexora-banner-01-power-your-next-setup.svg",
+            "/Nexora Computers_ Power Your Next Setup.png",
             "best-power-supplies-for-your-geforce-rtx-40-build.jpg",
             "rog-matrix-rtx-4090.jpg"
       ]

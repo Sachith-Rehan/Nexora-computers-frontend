@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import HomeSlideShow from "../components/homePageSlideShow";
 import Brands from "../components/brands";
 import GetProductByCategory from "../components/getProductByCategory";
+import TopDeals from "../components/topDeals";
 
 
 const categories = [
@@ -168,11 +169,11 @@ export default function UserHomePage() {
     {/* Featured brands */}
     <Brands/>
 
-    {/* discounts */}
+    <TopDeals />
     
     <section>
       <div>
-        <GetProductByCategory category="processor" />
+        <GetProductByCategory category="laptops" />
         <GetProductByCategory category="graphic card" />
         <GetProductByCategory category="cooling" />
 

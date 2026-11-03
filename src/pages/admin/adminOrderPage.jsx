@@ -4,6 +4,7 @@ import api from "../../utils/api";
 import getFormattedPrice from "../../utils/priceFormatter";
 import LoadingScreen from "../../components/loadingScreen";
 import { formatDateTime } from "../../utils/timeFormatter";
+import OrderStatusBadge from "../../components/orderStatusBadge";
 import OrderDataModel from "../../components/orderDataModel";
 
 export default function AdminOrdersPage() {
@@ -140,7 +141,7 @@ export default function AdminOrdersPage() {
                                     <td className="px-4 py-3 font-semibold text-gray-800">{order.firstName + " " + order.lastName}</td>
                                     <td className="px-4 py-3 font-semibold text-gray-800">{order.city}</td>
                                     <td className="px-4 py-3 text-gray-600 ">{order.phone}</td>
-                                    <td className="px-4 py-3 text-gray-600">{order.status}</td>
+                                    <td className="px-4 py-3 text-gray-600"><OrderStatusBadge status={order.status} /></td>
                                     <td className="px-4 py-3 text-gray-600">{formatDateTime(order.date)}</td> 
                                     <td className="px-4 py-3 text-center font-semibold text-gray-700">{getFormattedPrice(order.totalAmount)}</td>
                                     <td className="px-4 py-3 text-center">

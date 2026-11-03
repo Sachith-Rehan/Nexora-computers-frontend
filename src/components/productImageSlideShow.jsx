@@ -19,7 +19,7 @@ export default function ProductImageSlideShow({ images = [], name = "Product" })
         <img src={images[selected]} alt={name + ", view " + (selected + 1)} className="h-full w-full object-contain p-4" />
       </div>
       {images.length > 1 && (
-        <div role="group" aria-label="Product photos" className="mt-4 flex gap-2 overflow-x-auto p-1">
+        <div role="group" aria-label="Product photos" className="mt-4 flex flex-wrap gap-2 p-1">
           {images.map((image, index) => (
             <button
               key={index}

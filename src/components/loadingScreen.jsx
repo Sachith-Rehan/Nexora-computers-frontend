@@ -1,8 +1,14 @@
 export default function LoadingScreen() {
-      return (
-            <div className="w-screen h-screen fixed top-0 left-0 bg-black/60 flex items-center justify-center z-50">
-                  <div className="w-[100px] h-[100px] border-4 border-white border-t-transparent rounded-full animate-spin ">
-                  </div>
-            </div> 
-      )
+  return (
+    <div
+      role="status"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+    >
+      <span
+        aria-hidden="true"
+        className="size-[100px] rounded-full border-[3px] border-white border-t-transparent motion-safe:animate-spin"
+      />
+      <span className="sr-only">Loading…</span>
+    </div>
+  );
 }
