@@ -4,7 +4,6 @@ name: Deploy React Frontend to Vercel
 on:
   push:
     branches: [main]
-
   workflow_dispatch:
 
 permissions:
@@ -12,8 +11,6 @@ permissions:
 
 jobs:
   deploy:
-    name: Build and Deploy to Vercel
-
     runs-on: ubuntu-latest
 
     env:
@@ -22,33 +19,36 @@ jobs:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
     steps:
-      # 1. Download the frontend code
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Install Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "npm"
 
-      # 3. Install project dependencies
       - name: Install Dependencies
         run: npm ci
 
-      # 4. Install the Vercel CLI
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
-      # 5. Retrieve Vercel environment variables
-      - name: Pull Vercel Environment
+      - name: Pull Vercel Project Settings
         run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 
-      # 6. Build React application
-      - name: Build React Frontend
+      - name: Create Production Environment File
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URI }}
+        run: |
+          : "${VITE_API_URL:?Missing API URL secret}"
+          printf 'VITE_API_URL=%s\n' "$VITE_API_URL" > .env.production.local
+          chmod 600 .env.production.local
+
+      - name: Build Frontend
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: vercel build --prod --token="$VERCEL_TOKEN"
 
-      # 7. Deploy to Vercel
-      - name: Deploy to Production
+      - name: Deploy to Vercel
         run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
