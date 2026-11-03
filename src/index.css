@@ -65,3 +65,25 @@
 .animate-brand-scroll {
   animation: brand-scroll 30s linear infinite;
 }
+/* Account pages */
+.account-page {
+  @apply min-h-[calc(100vh-100px)] bg-[#0b0e14] px-4 py-10 text-zinc-100 sm:py-16;
+}
+.account-card {
+  @apply mx-auto max-w-xl rounded-2xl border border-white/10 bg-[#131822] p-6 shadow-xl sm:p-8;
+}
+.account-kicker {
+  @apply mb-2 text-xs font-bold uppercase tracking-widest text-blue-400;
+}
+.account-title {
+  @apply text-3xl font-bold tracking-tight text-white;
+}
+.account-field {
+  @apply flex min-w-0 flex-col gap-2 text-sm font-medium text-zinc-300;
+}
+.account-field input {
+  @apply w-full rounded-xl border border-white/15 bg-[#0b0e14] px-3 py-2.5 text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30;
+}
+.account-action {
+  @apply rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-blue-400;
+}

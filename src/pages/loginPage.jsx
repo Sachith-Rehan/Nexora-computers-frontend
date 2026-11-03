@@ -22,6 +22,7 @@ export default function LoginPage() {
       });
 
       localStorage.setItem("token", res.data.token);
+      console.log(res.data.token);
 
       if (res.data.isAdmin == true) {
         navigate("/admin");

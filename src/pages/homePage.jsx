@@ -7,7 +7,8 @@ import CheckoutPage from "./checkoutPage";
 import Footer from "../components/footer";
 import UserHomePage from "./userHomePage";
 import ContactUsPage from "./conatactUsPage";
-import Settings from "../components/settings";
+import ChangePassword from "./changePassword";
+import Settings from "./settings";
 import MyOrders from "../components/myOrders";
 
 export default function HomePage() {
@@ -25,6 +26,7 @@ export default function HomePage() {
               <Route path="/cart" element={<CartPage/>}/>
               <Route path="/checkout" element={<CheckoutPage/>}/>
               <Route path="/overview/:productId" element={<ProductOverViewPage/>}/>
+              <Route path="/settings/password" element={<ChangePassword/>}/>
               <Route path="/settings" element={<Settings/>}/>
               <Route path="/my-orders" element={<MyOrders/>}/>
               <Route path="/*" element={<p>404 page</p>}/>

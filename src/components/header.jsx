@@ -196,9 +196,6 @@ export default function Header({ cartCount = 0 }) {
             {mobileSearchOpen ? <FiX size={20} /> : <FiSearch size={20} />}
           </button>
 
-          <Link>
-            <UserData/>
-          </Link>   
           <Link
             to="/cart"
             aria-label={`Shopping cart, ${itemCount} items`}
@@ -213,6 +210,11 @@ export default function Header({ cartCount = 0 }) {
             )}
           </Link>
 
+{/* user data */}
+          <Link>
+            <UserData/>
+          </Link>   
+          
           <button
             type="button"
             aria-label="Toggle mobile menu"

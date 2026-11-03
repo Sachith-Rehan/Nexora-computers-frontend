@@ -25,7 +25,7 @@ import AdminEditProductForm from "./admin/adminEditProductForm";
 import AdminOrdersPage from "./admin/adminOrderPage";
 import toast from "react-hot-toast";
 import LoadingScreen from "../components/loadingScreen";
-
+import api from "../utils/api";
 
 
 const menuItems = [
@@ -61,23 +61,23 @@ export default function AdminPage() {
       }
 
       if(token != null){
-        api.post("/users/me", {
-          headers : {
-            "Authorization" : `Bearer ${token}`
-          }
-        }).then((res)=>{
-            setUser(res.data)
-          }
-        ).catch( ()=> {
-          toast.error("You are not authorized")
-          navigate("/")
-          }
-        )
+        api.get("/users/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).then((res) => {
+          setUser(res.data);  
+        }).catch((err) => {
+          console.log(err);
+          toast.error("You are not authorized to access this page");
+          navigate("/");
+        })
+                
       }
     }
-  )
+  , [])
 
-  
+ 
 
   const handleCloseSidebar = () => {
     setIsSidebarOpen(false);
