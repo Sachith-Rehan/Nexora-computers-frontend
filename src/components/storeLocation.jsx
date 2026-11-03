@@ -6,8 +6,8 @@ import {
 } from "react-icons/io5";
 
 const store = {
-  name: "iComputers",
-  address: "Icomputers, Matara, Sri Lanka",
+  name: "Nexora Computers",
+  address: "Nexora Computers, Matara, Sri Lanka",
   mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d834.238707376687!2d80.54490344818863!3d5.949125220506889!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae1391ba024d997%3A0x1d3966a4df4e8f96!2sTulip%20Computers!5e0!3m2!1sen!2slk!4v1792522279685!5m2!1sen!2slk",
   directionsUrl: "https://maps.app.goo.gl/dq8vPqsmbGNvZon5A",
 };
@@ -83,7 +83,7 @@ export default function StoreLocation() {
           <div className="min-h-[350px] bg-[#181b22] lg:min-h-[430px]">
             {hasMap ? (
               <iframe
-                title="iComputers Store Location"
+                title="Nexora Computers Store Location"
                 src={store.mapEmbedUrl}
                 width="100%"
                 height="100%"

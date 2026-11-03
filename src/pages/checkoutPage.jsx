@@ -468,7 +468,7 @@ export default function CheckoutPage() {
                     </p>
 
                     <p className="mt-2 text-xs leading-6 text-zinc-400">
-                      Contact the iComputers support team
+                      Contact the Nexora Computers support team
                       if you need assistance.
                     </p>
 

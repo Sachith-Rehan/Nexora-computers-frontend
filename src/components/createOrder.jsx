@@ -247,7 +247,7 @@ export default function CreateOrder({ cart = [], expectedTotal, paymentMethod, o
 
                   <div>
                     <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-400">
-                      iCOMPUTERS CHECKOUT
+                      Nexora Computers CHECKOUT
                     </p>
 
                     <h2

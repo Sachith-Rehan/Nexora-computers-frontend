@@ -18,7 +18,7 @@ import StoreLocation from "../components/storeLocation";
 const contactDetails = {
   email: "sachithrehan578@gmail.com",
   phone: "+94 776346955",
-  address: "I computers, Matara, Sri Lanka",
+  address: "Nexora Computers, Matara, Sri Lanka",
   hours: "Monday – Saturday, 9 AM – 6 PM",
 };
 
@@ -138,7 +138,7 @@ export default function ContactUsPage() {
     }
 
     const emailSubject = encodeURIComponent(
-      `[iComputers Contact] ${subject}`
+      `[Nexora Computers Contact] ${subject}`
     );
 
     const emailBody = encodeURIComponent(
@@ -435,7 +435,7 @@ export default function ContactUsPage() {
                 </h3>
 
                 <p className="mt-5 max-w-sm text-sm leading-7 text-zinc-400">
-                  At iComputers, your experience matters
+                  At Nexora Computers, your experience matters
                   long after you've picked your next piece
                   of tech. We're here when you need us.
                 </p>
@@ -488,7 +488,7 @@ export default function ContactUsPage() {
 
               <div className="relative mt-16 border-t border-white/10 pt-8">
                 <p className="text-xs font-semibold tracking-[0.2em] text-blue-400">
-                  iCOMPUTERS
+                  Nexora Computers
                 </p>
 
                 <p className="mt-2 text-sm text-zinc-500">
@@ -522,7 +522,7 @@ export default function ContactUsPage() {
 
             <p className="mt-5 max-w-sm text-sm leading-7 text-zinc-400">
               Quick answers to some common questions
-              about shopping with iComputers.
+              about shopping with Nexora Computers.
             </p>
 
             <a

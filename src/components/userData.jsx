@@ -300,7 +300,7 @@ export default function UserData() {
           {/* Bottom branding */}
           <div className="border-t border-white/10 bg-[#0d0f13] px-4 py-3 text-center">
             <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-600">
-              iComputers Account
+              Nexora Computers Account
             </p>
           </div>
         </div>

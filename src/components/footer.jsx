@@ -193,7 +193,7 @@ export default function Footer() {
         <div className="mt-12 flex flex-col gap-5 border-t border-white/10 pt-7 sm:flex-row sm:items-center sm:justify-between">
 
           <p className="text-xs text-zinc-500">
-            © {new Date().getFullYear()} iComputers.
+            © {new Date().getFullYear()} Nexora Computers.
             All rights reserved.
           </p>
 
