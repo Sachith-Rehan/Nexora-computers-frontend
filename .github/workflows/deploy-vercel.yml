@@ -13,42 +13,76 @@ permissions:
 jobs:
   deploy:
     name: Build and Deploy to Vercel
-
     runs-on: ubuntu-latest
 
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
     steps:
-      # 1. Download the frontend code
+      # Step 1: Get frontend source code
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Install Node.js
+      # Step 2: Install Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "npm"
 
-      # 3. Install project dependencies
+      # Step 3: Check required secrets and API URL
+      - name: Validate Environment Variables
+        shell: bash
+        run: |
+          for name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID VITE_API_URL; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Missing required secret: $name"
+              exit 1
+            fi
+          done
+
+          if [ "$VITE_API_URL" != "https://i-computers-backend.duckdns.org/api" ]; then
+            echo "::error::VITE_API_URL has an incorrect value"
+            echo "Expected: https://i-computers-backend.duckdns.org/api"
+            exit 1
+          fi
+
+          echo "Environment variables validated"
+
+      # Step 4: Install project dependencies
       - name: Install Dependencies
         run: npm ci
 
-      # 4. Install the Vercel CLI
+      # Step 5: Install Vercel CLI
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
-      # 5. Retrieve Vercel environment variables
-      - name: Pull Vercel Environment
-        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+      # Step 6: Get Vercel project configuration
+      - name: Pull Vercel Project Settings
+        run: |
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 
-      # 6. Build React application
+      # Step 7: Create correct Vite production env file
+      - name: Create Production Environment File
+        shell: bash
+        run: |
+          printf 'VITE_API_URL=%s\n' "$VITE_API_URL" > .env
+
+          chmod 600 .env
+
+          test -s .env
+
+          echo "Production environment file created"
+
+      # Step 8: Build frontend with API URL
       - name: Build React Frontend
-        run: vercel build --prod --token="$VERCEL_TOKEN"
+        run: |
+          vercel build --prod --token="$VERCEL_TOKEN"
 
-      # 7. Deploy to Vercel
-      - name: Deploy to Production
-        run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+      # Step 9: Deploy generated build
+      - name: Deploy to Vercel Production
+        run: |
+          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
