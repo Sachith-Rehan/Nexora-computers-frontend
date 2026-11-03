@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom'
+import { useLayoutEffect } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import './App.css'
 import HomePage from './pages/homePage.jsx'
 import RegisterPage from './pages/registerPage.jsx'
@@ -9,6 +10,12 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 
 
 function App() {
+  const { pathname } = useLocation()
+
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [pathname])
+
   return (
     
     <GoogleOAuthProvider clientId="849594857218-6vqe05dqqtaqe1h0opfqjj87iekdgqr1.apps.googleusercontent.com">

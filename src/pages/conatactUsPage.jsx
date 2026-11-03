@@ -163,7 +163,7 @@ export default function ContactUsPage() {
 
         <div className="pointer-events-none absolute -bottom-52 -left-40 h-[420px] w-[420px] rounded-full bg-indigo-600/[0.07] blur-[110px]" />
 
-        <div className="relative mx-auto max-w-7xl px-5 pb-16 pt-20 sm:px-8 sm:pb-20 sm:pt-24 lg:px-12 lg:pt-28">
+        <div className="page-wrapper relative pb-16 pt-20 sm:pb-20 sm:pt-24 lg:pt-28">
 
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/[0.07] px-3.5 py-2 text-xs font-medium tracking-wider text-blue-400">
             <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.8)]" />
@@ -197,8 +197,8 @@ export default function ContactUsPage() {
       </section>
 
       {/* CONTACT DETAILS SECTION */}
-      <section className="px-5 py-16 sm:px-8 sm:py-20 lg:px-12">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-16 sm:py-20">
+        <div className="page-wrapper">
 
           <div className="mb-9 flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
@@ -504,9 +504,9 @@ export default function ContactUsPage() {
       <StoreLocation/>
 
       {/* FAQ SECTION */}
-      <section className="border-t border-white/[0.06] bg-[#0d0f13] px-5 py-20 sm:px-8 lg:px-12 lg:py-24">
+      <section className="border-t border-white/[0.06] bg-[#0d0f13] py-20 lg:py-24">
 
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+        <div className="page-wrapper grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
 
           {/* FAQ INTRO */}
           <div>
@@ -575,9 +575,9 @@ export default function ContactUsPage() {
       </section>
 
       {/* BOTTOM CTA */}
-      <section className="px-5 py-16 sm:px-8 lg:px-12">
+      <section className="page-wrapper py-16">
 
-        <div className="relative mx-auto flex max-w-7xl flex-col items-start justify-between gap-7 overflow-hidden rounded-3xl border border-blue-500/20 bg-gradient-to-r from-[#111a30] to-[#111318] p-8 sm:p-12 md:flex-row md:items-center">
+        <div className="relative flex flex-col items-start justify-between gap-7 overflow-hidden rounded-3xl border border-blue-500/20 bg-gradient-to-r from-[#111a30] to-[#111318] p-8 sm:p-12 md:flex-row md:items-center">
 
           <div className="pointer-events-none absolute -right-24 -top-44 h-80 w-80 rounded-full bg-blue-500/15 blur-[65px]" />
 

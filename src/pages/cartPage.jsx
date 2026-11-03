@@ -82,7 +82,7 @@ export default function CartPage() {
     <main className="min-h-screen bg-[#090b10] text-white">
 
 
-      <section className="mx-auto max-w-[1400px] px-4 py-10 sm:px-6 lg:px-10 lg:py-14">
+      <section className="page-wrapper py-10 lg:py-14">
 
         {/* EMPTY CART */}
         {cart.length === 0 ? (

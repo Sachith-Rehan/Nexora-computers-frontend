@@ -1,144 +1,39 @@
 import { useState } from "react";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiImage } from "react-icons/fi";
 
-export default function ProductImageSlideShow({ images = [] }) {
+export default function ProductImageSlideShow({ images = [], name = "Product" }) {
+  const [selected, setSelected] = useState(0);
 
-    const [activeImageIndex, setActiveImageIndex] = useState(0);
-    const [startIndex, setStartIndex] = useState(0);
-    const [imageVisible, setImageVisible] = useState(true);
-
-    const thumbnailWidth = 80;
-    const gap = 8;
-
-    const changeImage = (index) => {
-
-        if (index === activeImageIndex) return;
-
-        setImageVisible(false);
-
-        setTimeout(() => {
-            setActiveImageIndex(index);
-            setImageVisible(true);
-        }, 150);
-    };
-
-    const previousImages = () => {
-        if (startIndex > 0) {
-            setStartIndex(startIndex - 1);
-        }
-    };
-
-    const nextImages = () => {
-        if (startIndex + 4 < images.length) {
-            setStartIndex(startIndex + 1);
-        }
-    };
-
-    if (images.length === 0) {
-        return (
-            <div className="w-[500px] h-[450px] bg-gray-100 flex items-center justify-center rounded-xl">
-                <p className="text-gray-400">
-                    No Images Available
-                </p>
-            </div>
-        );
-    }
-
+  if (!images.length) {
     return (
-        <div className="w-full max-w-[500px]">
-
-            {/* Main Image */}
-            <div className="w-full h-[450px] bg-white flex items-center justify-center overflow-hidden">
-
-                <img
-                    src={images[activeImageIndex]}
-                    alt="Product"
-                    className={`w-full h-full object-contain transition-all duration-300
-                    ${
-                        imageVisible
-                            ? "opacity-100 scale-100"
-                            : "opacity-0 scale-95"
-                    }`}
-                />
-
-            </div>
-
-
-            {/* Thumbnail Slider */}
-            <div className="mt-4 flex items-center justify-center gap-2">
-
-                {/* Previous Arrow */}
-                <button
-                    onClick={previousImages}
-                    disabled={startIndex === 0}
-                    className={`w-[35px] h-[80px] flex items-center justify-center transition-all duration-300
-                    ${
-                        startIndex === 0
-                            ? "text-gray-300 cursor-not-allowed"
-                            : "text-gray-600 hover:text-accent hover:scale-110"
-                    }`}
-                >
-                    <FiChevronLeft size={30} />
-                </button>
-
-
-                {/* Thumbnail View Area */}
-                <div className="w-[344px] overflow-hidden">
-
-                    {/* Moving Thumbnail Row */}
-                    <div
-                        className="flex gap-2 transition-transform duration-500 ease-in-out"
-                        style={{
-                            transform: `translateX(-${
-                                startIndex * (thumbnailWidth + gap)
-                            }px)`
-                        }}
-                    >
-
-                        {images.map((image, index) => (
-
-                            <button
-                                key={index}
-                                onClick={() => changeImage(index)}
-                                className={`w-[80px] h-[80px] shrink-0 rounded-lg overflow-hidden border-2 transition-all duration-300
-                                ${
-                                    activeImageIndex === index
-                                        ? "border-accent scale-95"
-                                        : "border-gray-200 hover:border-gray-400"
-                                }`}
-                            >
-
-                                <img
-                                    src={image}
-                                    alt={`Product ${index + 1}`}
-                                    className="w-full h-full object-contain p-1"
-                                />
-
-                            </button>
-
-                        ))}
-
-                    </div>
-
-                </div>
-
-
-                {/* Next Arrow */}
-                <button
-                    onClick={nextImages}
-                    disabled={startIndex + 4 >= images.length}
-                    className={`w-[35px] h-[80px] flex items-center justify-center transition-all duration-300
-                    ${
-                        startIndex + 4 >= images.length
-                            ? "text-gray-300 cursor-not-allowed"
-                            : "text-gray-600 hover:text-accent hover:scale-110"
-                    }`}
-                >
-                    <FiChevronRight size={30} />
-                </button>
-
-            </div>
-
-        </div>
+      <div className="flex aspect-square w-full flex-col items-center justify-center gap-3 text-zinc-400">
+        <FiImage size={32} aria-hidden="true" />
+        <p>No product photos available</p>
+      </div>
     );
+  }
+
+  return (
+    <div className="w-full min-w-0">
+      <div className="flex aspect-square max-h-[480px] w-full items-center justify-center overflow-hidden rounded-xl bg-white">
+        <img src={images[selected]} alt={name + ", view " + (selected + 1)} className="h-full w-full object-contain p-4" />
+      </div>
+      {images.length > 1 && (
+        <div role="group" aria-label="Product photos" className="mt-4 flex gap-2 overflow-x-auto p-1">
+          {images.map((image, index) => (
+            <button
+              key={index}
+              type="button"
+              aria-label={`Show photo ${index + 1} of ${images.length}`}
+              aria-pressed={selected === index}
+              onClick={() => setSelected(index)}
+              className={`size-16 shrink-0 overflow-hidden rounded-lg border-2 bg-white focus-visible:outline-blue-400 sm:size-20 ${selected === index ? "border-blue-500" : "border-transparent"}`}
+            >
+              <img src={image} alt="" className="h-full w-full object-contain p-1" />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

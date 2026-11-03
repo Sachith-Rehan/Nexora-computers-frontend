@@ -77,7 +77,7 @@ export default function CheckoutPage() {
       </div>
 
       {/* PAGE CONTENT */}
-      <section className="mx-auto max-w-[1400px] px-4 py-10 sm:px-6 lg:px-10 lg:py-14">
+      <section className="page-wrapper py-10 lg:py-14">
 
         {/* PAGE HEADING */}
         <div className="mb-10">

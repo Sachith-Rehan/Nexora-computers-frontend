@@ -20,6 +20,10 @@ import UserData from "./userData";
 
 const categories = [
   { label: "Laptops", value: "laptop" },
+  { value: "desktop", label: "Desktop" },
+  { value: "gaming", label: "Gaming" },
+  { value: "workstation", label: "Workstation" },
+  { value: "accessories", label: "Accessories" },
   { label: "Graphics Cards", value: "graphic card" },
   { label: "Processors", value: "processor" },
   { label: "Motherboards", value: "motherboard" },
@@ -120,7 +124,7 @@ export default function Header({ cartCount = 0 }) {
   };
 
   const desktopNavClass = ({ isActive }) =>
-    `group relative flex h-full items-center text-[13px] font-medium transition-colors ${
+    `group relative flex h-full items-center text-sm font-medium transition-colors ${
       isActive
         ? "text-blue-400"
         : "text-zinc-400 hover:text-white"
@@ -139,18 +143,17 @@ export default function Header({ cartCount = 0 }) {
       <div className="h-[2px] bg-gradient-to-r from-blue-700 via-blue-500 to-blue-700" />
 
       {/* MAIN HEADER */}
-      <div className="mx-auto flex h-[72px] max-w-[1600px] items-center justify-between gap-4 px-4 sm:h-[78px] sm:px-6 lg:px-10">
-
+      <div className="page-wrapper flex h-16 items-center justify-between gap-2 sm:h-[72px] md:gap-5">
         {/* LOGO */}
         <Link
           to="/"
-          aria-label="iComputers Home"
-          className="flex shrink-0 items-center"
+          aria-label="Nexora Computers Home"
+          className="flex min-w-0 w-36 items-center sm:w-40 lg:w-48"
         >
           <img
             src="/header-logo.png"
-            alt="iComputers"
-            className="h-11 w-auto max-w-[155px] object-contain sm:h-12 sm:max-w-[190px]"
+            alt="Nexora Computers"
+            className="block h-auto w-full"
           />
         </Link>
 
@@ -158,7 +161,7 @@ export default function Header({ cartCount = 0 }) {
         <form
           onSubmit={handleSearch}
           role="search"
-          className="hidden min-w-0 max-w-[540px] flex-1 items-center overflow-hidden rounded-xl border border-white/10 bg-[#151922] transition focus-within:border-blue-500/60 md:flex"
+          className="hidden h-11 min-w-0 max-w-[540px] flex-1 items-center overflow-hidden rounded-xl border border-white/10 bg-[#151922] transition focus-within:border-blue-500/60 md:flex"
         >
           <FiSearch className="ml-4 shrink-0 text-lg text-blue-400" />
 
@@ -168,12 +171,12 @@ export default function Header({ cartCount = 0 }) {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search computers, monitors, components..."
             aria-label="Search products"
-            className="h-11 min-w-0 flex-1 bg-transparent px-3 text-sm text-white outline-none placeholder:text-zinc-500"
+            className="h-full min-w-0 flex-1 bg-transparent px-3 text-sm text-white outline-none placeholder:text-zinc-500"
           />
 
           <button
             type="submit"
-            className="flex h-11 shrink-0 items-center gap-2 bg-blue-600 px-5 text-xs font-semibold transition hover:bg-blue-500"
+            className="flex h-full shrink-0 items-center gap-2 bg-blue-600 px-4 text-sm font-semibold transition hover:bg-blue-500"
           >
             Search
             <FiArrowRight />
@@ -181,7 +184,7 @@ export default function Header({ cartCount = 0 }) {
         </form>
 
         {/* HEADER ACTIONS */}
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
 
           <button
             type="button"
@@ -211,9 +214,7 @@ export default function Header({ cartCount = 0 }) {
           </Link>
 
 {/* user data */}
-          <Link>
-            <UserData/>
-          </Link>   
+          <UserData />   
           
           <button
             type="button"
@@ -260,7 +261,7 @@ export default function Header({ cartCount = 0 }) {
 
       {/* DESKTOP NAVIGATION */}
       <div className="hidden border-t border-white/[0.07] bg-[#10141c] md:block">
-        <div className="mx-auto flex h-[50px] max-w-[1600px] items-center justify-between gap-6 px-4 sm:px-6 lg:px-10">
+        <div className="page-wrapper flex h-11 items-center justify-between gap-6">
 
           <div className="flex h-full items-center gap-8">
 
@@ -273,7 +274,7 @@ export default function Header({ cartCount = 0 }) {
                 aria-expanded={categoriesOpen}
                 aria-haspopup="true"
                 onClick={() => setCategoriesOpen((prev) => !prev)}
-                className={`flex h-full items-center gap-2 border-b-2 text-[13px] font-semibold transition ${
+                className={`flex h-full items-center gap-2 border-b-2 text-sm font-semibold transition ${
                   categoriesOpen
                     ? "border-blue-500 text-blue-400"
                     : "border-transparent hover:text-blue-400"
@@ -292,7 +293,7 @@ export default function Header({ cartCount = 0 }) {
 
               {/* CATEGORY DROPDOWN */}
               {categoriesOpen && (
-                <div className="absolute left-0 top-full z-50 w-[490px] overflow-hidden rounded-b-2xl border border-white/10 bg-[#131822] shadow-2xl shadow-black/60">
+                <div className="absolute left-0 top-full z-50 max-h-[calc(100dvh-8rem)] w-[490px] overflow-y-auto rounded-b-2xl border border-white/10 bg-[#131822] shadow-2xl shadow-black/60">
 
                   <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
                     <div>
@@ -372,11 +373,11 @@ export default function Header({ cartCount = 0 }) {
 
       {/* MOBILE NAVIGATION */}
       {menuOpen && (
-        <div className="absolute left-0 top-full z-50 max-h-[calc(100dvh-74px)] w-full overflow-y-auto border-t border-white/10 bg-[#10141c] shadow-2xl shadow-black/50 md:hidden">
+        <div className="absolute left-0 top-full z-50 max-h-[calc(100dvh-67px)] sm:max-h-[calc(100dvh-75px)] w-full overflow-y-auto border-t border-white/10 bg-[#10141c] shadow-2xl shadow-black/50 md:hidden">
 
           <nav
             aria-label="Mobile navigation"
-            className="flex flex-col gap-1 px-4 py-5"
+            className="page-wrapper flex flex-col gap-1 py-5"
           >
             {navLinks.map((link) => (
               <NavLink

@@ -1,10 +1,11 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   Routes,
   Route,
   NavLink,
   Navigate,
+  useLocation,
   useNavigate,
 } from "react-router-dom";
 
@@ -13,16 +14,20 @@ import {
   IoClose,
   IoReceiptOutline,
   IoCubeOutline,
+  IoAddCircleOutline,
   IoPeopleOutline,
+  IoPersonAddOutline,
   IoChevronForwardOutline,
   IoShieldCheckmarkOutline,
 } from "react-icons/io5";
 
 import AdminProductPage from "./admin/adminProductPage";
 import AdminUserPage from "./admin/adminUsersPage";
-import AdminAddProductForm from "./admin/adminAddProductForm";
+import AdminAddUserPage from "./admin/adminAddUserPage";
+import AdminProductForm from "./admin/adminProductForm";
 import AdminEditProductForm from "./admin/adminEditProductForm";
 import AdminOrdersPage from "./admin/adminOrderPage";
+import NotFoundPage from "./notFoundPage";
 import toast from "react-hot-toast";
 import LoadingScreen from "../components/loadingScreen";
 import api from "../utils/api";
@@ -40,13 +45,29 @@ const menuItems = [
     icon: IoCubeOutline,
   },
   {
+    name: "Add Product",
+    path: "/admin/add-product",
+    icon: IoAddCircleOutline,
+  },
+  {
     name: "Users",
     path: "/admin/users",
     icon: IoPeopleOutline,
   },
+  {
+    name: "Add User",
+    path: "/admin/add-user",
+    icon: IoPersonAddOutline,
+  },
 ];
 
 export default function AdminPage() {
+  const { pathname } = useLocation();
+  const contentRef = useRef(null);
+
+  useLayoutEffect(() => {
+    contentRef.current?.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
   const [user, setUser] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -66,7 +87,11 @@ export default function AdminPage() {
             Authorization: `Bearer ${token}`,
           },
         }).then((res) => {
-          setUser(res.data);  
+          if (!res.data.isAdmin) {
+            navigate("/", { replace: true });
+            return;
+          }
+          setUser(res.data);
         }).catch((err) => {
           console.log(err);
           toast.error("You are not authorized to access this page");
@@ -251,6 +276,7 @@ export default function AdminPage() {
 
       {/* Main Content */}
       <main
+        ref={contentRef}
         className="flex-1 min-w-0 h-full
         bg-primary p-4 pt-20 md:pt-4
         overflow-y-auto"
@@ -277,16 +303,18 @@ export default function AdminPage() {
             path="users"
             element={<AdminUserPage />}
           />
+          <Route path="add-user" element={<AdminAddUserPage />} />
 
           <Route
             path="add-product"
-            element={<AdminAddProductForm />}
+            element={<AdminProductForm />}
           />
 
           <Route
             path="edit-product"
             element={<AdminEditProductForm />}
           />
+          <Route path="*" element={<NotFoundPage admin />} />
         </Routes>
         }
       </main>

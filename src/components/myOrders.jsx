@@ -1,173 +1,102 @@
-
 import { useEffect, useState } from "react";
-
+import { Link } from "react-router-dom";
 import api from "../utils/api";
 import getFormattedPrice from "../utils/priceFormatter";
-import LoadingScreen from "./loadingScreen";
 import { formatDateTime } from "../utils/timeFormatter";
 import OrderDataModel from "./orderDataModel";
 
 export default function MyOrders() {
-     
-      const [orders, setOrders] = useState([]);
-      const [loading, setLoading] = useState(true);
-      const [pageNumber, setPageNumber] = useState(1);
-      const [pageSize, setPageSize] = useState(10);
-      const [totalOrders, setTotalOrders] = useState(0);
-      const [totalPages, setTotalPages] = useState(1);
-      //load the date forom backend
-      useEffect(() => {
-            const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [attempt, setAttempt] = useState(0);
+  const [result, setResult] = useState(null);
 
-            setLoading(true);
+  useEffect(() => {
+    if (!token) return;
+    const controller = new AbortController();
+    api.get(`/orders/me/${page}/${pageSize}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: controller.signal,
+    }).then(({ data }) => {
+      if (controller.signal.aborted) return;
+      if (page > Math.max(1, data.totalPages)) {
+        setPage(Math.max(1, data.totalPages));
+        return;
+      }
+      setResult({ data });
+    }).catch((error) => {
+      if (!controller.signal.aborted) {
+        setResult({ error: error.response?.status === 401 ? "login" : "failed" });
+      }
+    });
+    return () => controller.abort();
+  }, [token, page, pageSize, attempt]);
 
-            api.get(`/orders/${pageNumber}/${pageSize}`, {
-                  headers: {
-                        Authorization: `Bearer ${token}`
-                  }
-            })
-            .then((res) => {
-                  setOrders(res.data.orders || []);
-                  setTotalOrders(res.data.totalOrders);
-                  setTotalPages(res.data.totalPages);
-            })
-            .catch((err) => {
-                  console.error(err);
-            })
-            .finally(() => {
-                  setLoading(false);
-            });
+  const data = result?.data;
+  const buttonClass = "rounded border border-zinc-600 px-4 py-2 text-sm font-semibold hover:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-40";
 
-      }, [pageNumber, pageSize]);
-    
-      
-    return (
+  return (
+    <section className="min-h-dvh w-full bg-[#090b10] px-4 py-12 text-white sm:px-8">
+      <div className="mx-auto max-w-4xl">
+        <header className="mb-7 border-b border-white/15 pb-6">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-cyan-400">Your account</p>
+          <h1 className="text-3xl font-semibold">My orders</h1>
+          {data && <p className="mt-2 text-sm text-zinc-400">{data.totalOrders} {data.totalOrders === 1 ? "order" : "orders"}</p>}
+        </header>
 
-      <div className = "w-full min-h-full flex flex-col items-center ">
-
-            <div className="w-full min-h-[90px] bg-white shadow-lg rounded-2xl flex items-center justify-between px-6 py-4 border border-gray-100">
-            
+        {!token || result?.error === "login" ? (
+          <p>Please <Link to="/login" className="text-cyan-400 underline">sign in</Link> to see your orders.</p>
+        ) : result?.error ? (
+          <div role="alert">
+            <p className="mb-4">Your orders couldn’t be loaded.</p>
+            <button className={buttonClass} onClick={() => { setResult(null); setAttempt(attempt + 1); }}>Try again</button>
+          </div>
+        ) : !data ? (
+          <p role="status">Loading your orders…</p>
+        ) : data.orders.length === 0 ? (
+          <div>
+            <h2 className="mb-3 text-xl font-semibold">No orders yet</h2>
+            <Link to="/products" className="text-cyan-400 underline">Browse products</Link>
+          </div>
+        ) : (
+          <>
+            <ul className="space-y-3">
+              {data.orders.map((order) => (
+                <li key={order.orderId} className="flex flex-wrap items-center justify-between gap-4 rounded border border-white/10 bg-[#111318] p-5">
                   <div>
-                        <p className="text-sm text-gray-500 font-medium">My Orders</p>
-                        <h1 className="text-2xl font-bold text-accent mt-1">{orders.length} Orders</h1>
+                    <h2 className="font-semibold">Order {order.orderId}</h2>
+                    <p className="mt-1 text-sm text-zinc-400">{formatDateTime(order.date)}</p>
                   </div>
-
-                  <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center">
-                        <span className="text-2xl font-bold text-accent">{orders.length}</span>
+                  <span className="rounded bg-cyan-400/10 px-3 py-1 text-sm capitalize text-cyan-300">{order.status}</span>
+                  <div className="flex items-center gap-4">
+                    <strong>{getFormattedPrice(order.totalAmount)}</strong>
+                    <div className="rounded-lg bg-white text-zinc-900">
+                      <OrderDataModel order={order} isAdmin={false} />
+                    </div>
                   </div>
-
-            </div>
-
-            {
-            loading && <LoadingScreen />
-            }
-
-            <div className="w-full overflow-x-auto mt-6 rounded-2xl shadow-lg border border-gray-200 bg-white">
-                  <table className="w-full text-sm text-left">
-                        <thead className="bg-accent text-white uppercase text-xs">
-                              <tr className="h-14">
-                                    <th className="px-4 py-3 text-center">Order Id</th>
-                                    <th className="px-4 py-3">Email</th>
-                                    <th className="px-4 py-3">Name</th>
-                                    <th className="px-4 py-3">City </th>
-                                    <th className="px-4 py-3">Phone</th>
-                                    <th className="px-4 py-3">Status</th>
-                                    <th className="px-4 py-3">Date</th>
-                                    <th className="px-4 py-3">Total Amount</th>
-                                    <th className="px-4 py-3 text-center">Action</th>
-                              </tr>
-                        </thead>
-
-                        <tbody className="divide-y divide-gray-200">
-                              {orders.map((order) => (
-                              <tr key={order.orderId} className="bg-white hover:bg-gray-50 transition-colors duration-200">
-                                    
-                                    <td className="px-4 py-3 text-center font-semibold text-gray-700"> {order.orderId} </td>
-                                    <td className="px-4 py-3 font-medium text-gray-700">{order.email}</td>
-                                    <td className="px-4 py-3 font-semibold text-gray-800">{order.firstName + " " + order.lastName}</td>
-                                    <td className="px-4 py-3 font-semibold text-gray-800">{order.city}</td>
-                                    <td className="px-4 py-3 text-gray-600 ">{order.phone}</td>
-                                    <td className="px-4 py-3 text-gray-600">{order.status}</td>
-                                    <td className="px-4 py-3 text-gray-600">{formatDateTime(order.date)}</td> 
-                                    <td className="px-4 py-3 text-center font-semibold text-gray-700">{getFormattedPrice(order.totalAmount)}</td>
-                                    <td className="px-4 py-3 text-center">
-                                         <OrderDataModel
-                                                isAdmin = {false}
-                                                order={order}
-                                                onStatusChange={(orderId, newStatus) => {
-                                                      setOrders((previousOrders) =>
-                                                            previousOrders.map((item) =>
-                                                                  item.orderId === orderId
-                                                                        ? { ...item, status: newStatus }
-                                                                        : item
-                                                            )
-                                                      );
-                                                }}
-                                          />
-                                    </td>
-
-                                                                        
-                              </tr>
-                              ))}
-                        </tbody>
-                  </table>
-            </div>
-
-
-
-
-            {/* page navigation bar */}
-
-            <div className="fixed bottom-5 z-40 bg-white border border-gray-200 shadow-lg rounded-xl px-4 py-3 flex items-center gap-5">
-                  <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500 font-medium">Show</span>
-
-                        <select value={pageSize} onChange={(e) => {
-                                                                  setPageSize(Number(e.target.value));
-                                                                  setPageNumber(1);
-                                                            }}
-                              className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium bg-white text-gray-700 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                        >
-                              <option value={2}>2</option>
-                              <option value={5}>5</option>
-                              <option value={10}>10</option>
-                              <option value={20}>20</option>
-                        </select>
-
-                        <span className="text-sm text-gray-500">per page</span>
-                  </div>
-
-                  <div className="h-7 w-px bg-gray-200"></div>
-
-                  <div className="flex items-center gap-3">
-                        <button
-                              disabled={pageNumber === 1}
-                              onClick={() => setPageNumber(pageNumber - 1)}
-                              className="px-4 py-2 rounded-lg text-sm font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition"
-                        >
-                              Previous
-                        </button>
-
-                        <div className="px-3 text-sm font-medium text-gray-600">
-                              Page
-                              <span className="mx-1 text-blue-600 font-bold">{pageNumber}</span>
-                              of
-                              <span className="ml-1 font-bold text-gray-800">{totalPages}</span>
-                        </div>
-
-                        <button
-                              disabled={pageNumber === totalPages}
-                              onClick={() => setPageNumber(pageNumber + 1)}
-                              className="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
-                        >
-                              Next
-                        </button>
-                  </div>
-            </div>
-        
-
+                </li>
+              ))}
+            </ul>
+            <nav aria-label="Order history pages" className="mt-6 flex flex-wrap items-center justify-between gap-4 text-sm">
+              <label>Orders per page{" "}
+                <select value={pageSize} className="rounded border border-zinc-600 bg-zinc-900 p-2" onChange={(event) => {
+                  setResult(null);
+                  setPage(1);
+                  setPageSize(Number(event.target.value));
+                }}>
+                  {[2, 5, 10, 20].map((size) => <option key={size}>{size}</option>)}
+                </select>
+              </label>
+              <div className="flex items-center gap-3">
+                <button className={buttonClass} disabled={page <= 1} onClick={() => { setResult(null); setPage(page - 1); }}>Previous</button>
+                <span>Page {page} of {data.totalPages}</span>
+                <button className={buttonClass} disabled={page >= data.totalPages} onClick={() => { setResult(null); setPage(page + 1); }}>Next</button>
+              </div>
+            </nav>
+          </>
+        )}
       </div>
-        
-        
-    )
-} 
+    </section>
+  );
+}

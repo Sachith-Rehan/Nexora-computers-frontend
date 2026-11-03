@@ -29,9 +29,9 @@ export default function GetProductByCategory({
   }, [category]);
 
   return (
-    <section className="w-full bg-[#151619] px-4 py-14 sm:px-6 lg:px-10">
+    <section className="w-full bg-[#151619] py-14">
 
-      <div className="mx-auto max-w-[1600px]">
+      <div className="page-wrapper">
 
         {/* Section Heading */}
         <div className="mb-7 flex flex-wrap items-end justify-between gap-4">

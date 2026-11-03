@@ -5,11 +5,11 @@ import GetProductByCategory from "../components/getProductByCategory";
 
 
 const categories = [
-{ name: "Laptops", number: "01", img: "laptop.webp", description: "Power meets portability." },
-{ name: "Desktop", number: "02", img: "desktop.avif", description: "Built for every task." },
-{ name: "Gaming", number: "03", img: "gaming.avif", description: "Enter another level." },
-{ name: "Workstation", number: "04", img: "workstation.png", description: "Performance without limits." },
-{ name: "Accessories", number: "05", img: "accessories.jpg", description: "Complete your setup." },
+{ name: "Laptops", value: "laptop", number: "01", img: "laptop.webp", description: "Power meets portability." },
+{ name: "Desktop", value: "desktop", number: "02", img: "desktop.avif", description: "Built for every task." },
+{ name: "Gaming", value: "gaming", number: "03", img: "gaming.avif", description: "Enter another level." },
+{ name: "Workstation", value: "workstation", number: "04", img: "workstation.png", description: "Performance without limits." },
+{ name: "Accessories", value: "accessories", number: "05", img: "accessories.jpg", description: "Complete your setup." },
 ];
 
 
@@ -20,8 +20,8 @@ export default function UserHomePage() {
 
 
     {/* Shop by category */}
-      <section className="bg-[#090a0d] px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24">
-        <div className="mx-auto max-w-[1600px]">
+      <section className="bg-[#090a0d] py-16 sm:py-20 lg:py-24">
+        <div className="page-wrapper">
 
           {/* Section heading */}
           <div className="mb-8 flex flex-col justify-between gap-5 sm:mb-10 sm:flex-row sm:items-end">
@@ -56,7 +56,7 @@ export default function UserHomePage() {
             {categories.map((category) => (
               <Link
                 key={category.number}
-                to="/products"
+                to={`/products?category=${encodeURIComponent(category.value)}`}
                 className="group relative flex min-h-[300px] flex-col overflow-hidden border-b border-white/10 bg-[#0d0f13] p-5 transition-colors duration-300 hover:bg-[#141820] sm:min-h-[340px] sm:border-r sm:border-white/10 xl:min-h-[390px] xl:border-b-0"
               >
                 {/* Category image */}

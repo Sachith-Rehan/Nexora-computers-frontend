@@ -10,14 +10,15 @@ import ContactUsPage from "./conatactUsPage";
 import ChangePassword from "./changePassword";
 import Settings from "./settings";
 import MyOrders from "../components/myOrders";
+import NotFoundPage from "./notFoundPage";
 
 export default function HomePage() {
   return (
-    <div className="min-h-scree flex flex-col">
+    <div className="flex min-h-dvh flex-col">
       <Header />
 
-      <main className="">
-        <div className="w-full min-h-[calc(100vh-100px)] bg-white flex-grow">
+      <div className="flex-1">
+        
             <Routes>
               <Route path="/" element={<UserHomePage/>}/>
               <Route path="/products" element={<ProductPage/>}/>
@@ -29,10 +30,9 @@ export default function HomePage() {
               <Route path="/settings/password" element={<ChangePassword/>}/>
               <Route path="/settings" element={<Settings/>}/>
               <Route path="/my-orders" element={<MyOrders/>}/>
-              <Route path="/*" element={<p>404 page</p>}/>
+              <Route path="*" element={<NotFoundPage />}/>
             </Routes>
-        </div>
-      </main>  
+      </div>  
 
       <Footer />
       

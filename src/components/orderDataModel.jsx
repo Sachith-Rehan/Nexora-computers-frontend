@@ -155,7 +155,7 @@ export default function OrderDataModel({ isAdmin, order, onStatusChange  }) {
             <>
 
                   {/* View Button */}
-                  <button onClick={() => setModelOpen(true)} className="w-9 h-9 flex items-center justify-center rounded-lg bg-accent/10 text-accent hover:bg-accent hover:text-white transition duration-200 cursor-pointer">
+                  <button aria-label={`View details for order ${order.orderId}`} title="View order details" onClick={() => setModelOpen(true)} className="w-9 h-9 flex items-center justify-center rounded-lg bg-accent/10 text-accent hover:bg-accent hover:text-white transition duration-200 cursor-pointer">
                         <FaEye />
                   </button>
 

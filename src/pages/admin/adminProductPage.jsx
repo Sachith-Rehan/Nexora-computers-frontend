@@ -1,4 +1,3 @@
-import { FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";  
@@ -7,10 +6,31 @@ import api from "../../utils/api";
 import { CiEdit } from "react-icons/ci";
 import LoadingScreen from "../../components/loadingScreen";
 import ProductDeleteButton from "../../components/productDeleteButton";
+
+function categoryKey(product) {
+  const value = (product.category || "").trim().toLowerCase();
+  return value === "laptops" ? "laptop" : value;
+}
+
+function inStock(product) {
+  return product.isAvailable && Number(product.stock) > 0;
+}
+
 export default function AdminProductPage() {
      
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState("");
+    const [category, setCategory] = useState("");
+    const [availability, setAvailability] = useState("");
+    const categoryOptions = [...new Set(products.map(categoryKey).filter(Boolean))].sort();
+    const query = search.trim().toLowerCase();
+    const filteredProducts = products.filter(product => {
+      const matchesSearch = [product.productId, product.name, product.brand, product.model]
+        .some(value => String(value ?? "").toLowerCase().includes(query));
+      return matchesSearch && (!category || categoryKey(product) === category)
+        && (!availability || Boolean(inStock(product)) === (availability === "available"));
+    });
   //load the date forom backend
     useEffect(() => {
       if(loading) {
@@ -36,14 +56,41 @@ export default function AdminProductPage() {
   
           <div>
             <p className="text-sm text-gray-500 font-medium">Product Overview</p>
-            <h1 className="text-2xl font-bold text-accent mt-1">{products.length} Products</h1>
+            <h1 className="text-2xl font-bold text-accent mt-1">Products</h1>
           </div>
 
           <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center">
-            <span className="text-2xl font-bold text-accent">{products.length}</span>
+            <span aria-label="Matching product count" className="text-2xl font-bold text-accent">{filteredProducts.length}</span>
           </div>
 
         </div>
+
+        <section aria-label="Product filters" className="mt-4 grid gap-3 rounded-xl border border-gray-200 bg-white p-4 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_auto] lg:items-end">
+          <label className="grid gap-1 text-sm font-medium">Search products
+            <input type="search" value={search} onChange={event => setSearch(event.target.value)}
+              placeholder="Name, ID, brand or model" className="min-w-0 rounded-lg border border-gray-300 px-3 py-2" />
+          </label>
+          <label className="grid gap-1 text-sm font-medium">Category
+            <select value={category} onChange={event => setCategory(event.target.value)} className="rounded-lg border border-gray-300 px-3 py-2">
+              <option value="">All categories</option>
+              {Array.from(new Set([...categoryOptions, category].filter(Boolean))).map(value => (
+                <option key={value} value={value}>{value.charAt(0).toUpperCase() + value.slice(1)}</option>
+              ))}
+            </select>
+          </label>
+          <label className="grid gap-1 text-sm font-medium">Availability
+            <select value={availability} onChange={event => setAvailability(event.target.value)} className="rounded-lg border border-gray-300 px-3 py-2">
+              <option value="">All products</option>
+              <option value="available">Available</option>
+              <option value="unavailable">Unavailable</option>
+            </select>
+          </label>
+          <button type="button" className="rounded-lg border border-gray-300 px-4 py-2 text-sm" onClick={() => {
+            setSearch("");
+            setCategory("");
+            setAvailability("");
+          }}>Clear filters</button>
+        </section>
 
         {
           loading && <LoadingScreen />
@@ -68,7 +115,12 @@ export default function AdminProductPage() {
             </thead>
 
             <tbody className="divide-y divide-gray-200">
-              {products.map((product) => (
+              {!loading && filteredProducts.length === 0 && (
+                <tr><td colSpan={11} className="p-8 text-center text-gray-500">
+                  {products.length ? "No products match these filters." : "No products yet."}
+                </td></tr>
+              )}
+              {filteredProducts.map((product) => (
                 <tr key={product.productId} className="bg-white hover:bg-gray-50 transition-colors duration-200">
                   <td className="px-4 py-3">
                     <div className="flex justify-center">
@@ -90,13 +142,13 @@ export default function AdminProductPage() {
                   </td>
 
                   <td className="px-4 py-3 text-center">
-                    {product.isAvailable ? (
+                    {inStock(product) ? (
                       <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
                         Available
                       </span>
                     ) : (
                       <span className="inline-block px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
-                        Out of Stock
+                        Unavailable
                       </span>
                     )}
                   </td>
@@ -122,11 +174,6 @@ export default function AdminProductPage() {
         
       
         
-        <div>
-          <Link to="/admin/add-product" className= "bg-accent w-[70px] h-[70px] rounded-full flex items-center justify-center text-white text-3xl fixed bottom-6 right-6 ">
-            <FaPlus />
-          </Link>
-        </div>
 
       </div>
         

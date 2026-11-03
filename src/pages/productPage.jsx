@@ -15,6 +15,10 @@ import ProductCard from "../components/productCard";
 
 const categories = [
   { value: "laptop", label: "Laptops" },
+  { value: "desktop", label: "Desktop" },
+  { value: "gaming", label: "Gaming" },
+  { value: "workstation", label: "Workstation" },
+  { value: "accessories", label: "Accessories" },
   { value: "graphic card", label: "Graphics Cards" },
   { value: "processor", label: "Processors" },
   { value: "motherboard", label: "Motherboards" },
@@ -40,13 +44,17 @@ const sortOptions = [
   { value: "newest", label: "Newest First" },
 ];
 
+function normalizeCategory(value) {
+  const category = String(value ?? "").trim().toLowerCase();
+  return category === "laptops" ? "laptop" : category;
+}
+
 export default function ProductPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
 
-  const [selectedBrands, setSelectedBrands] = useState([]);
   const [sortBy, setSortBy] = useState("default");
   const [inStockOnly, setInStockOnly] = useState(false);
   const [maxPrice, setMaxPrice] = useState(null);
@@ -56,7 +64,7 @@ export default function ProductPage() {
 
   const selectedCategories = searchParams
     .getAll("category")
-    .map((category) => category.trim().toLowerCase())
+    .map(normalizeCategory)
     .filter(Boolean);
 
   const searchTerm = (searchParams.get("search") || "")
@@ -99,12 +107,6 @@ export default function ProductPage() {
     };
   }, [retry]);
 
-  const brands = useMemo(() => {
-    return [...new Set(
-      products.map((product) => product.brand).filter(Boolean)
-    )].sort((a, b) => a.localeCompare(b));
-  }, [products]);
-
   const highestPrice = useMemo(() => {
     return Math.ceil(
       Math.max(0, ...products.map((p) => Number(p.price) || 0))
@@ -119,7 +121,7 @@ export default function ProductPage() {
     setSearchParams((previous) => {
       const params = new URLSearchParams(previous);
 
-      const currentCategories = params.getAll("category");
+      const currentCategories = params.getAll("category").map(normalizeCategory);
 
       params.delete("category");
 
@@ -135,16 +137,7 @@ export default function ProductPage() {
     });
   };
 
-  const toggleBrand = (brand) => {
-    setSelectedBrands((previous) =>
-      previous.includes(brand)
-        ? previous.filter((item) => item !== brand)
-        : [...previous, brand]
-    );
-  };
-
   const clearFilters = () => {
-    setSelectedBrands([]);
     setInStockOnly(false);
     setMaxPrice(null);
     setSortBy("default");
@@ -161,9 +154,6 @@ export default function ProductPage() {
 
     
 const filteredProducts = useMemo(() => {
-  const normalize = (value) =>
-    String(value ?? "").trim().toLowerCase();
-
   const result = products.filter((product) => {
 
     const matchesSearch =
@@ -184,14 +174,7 @@ const filteredProducts = useMemo(() => {
       selectedCategories.length === 0 ||
       selectedCategories.some(
         (category) =>
-          normalize(category) === normalize(product.category)
-      );
-
-    const matchesBrand =
-      selectedBrands.length === 0 ||
-      selectedBrands.some(
-        (brand) =>
-          normalize(brand) === normalize(product.brand)
+          category === normalizeCategory(product.category)
       );
 
     const matchesPrice =
@@ -206,7 +189,6 @@ const filteredProducts = useMemo(() => {
 
     return (
       matchesCategory &&
-      matchesBrand &&
       matchesPrice &&
       matchesStock &&
       matchesSearch
@@ -243,7 +225,6 @@ const filteredProducts = useMemo(() => {
 }, [
   products,
   selectedCategories.join("|"),
-  selectedBrands,
   effectiveMaxPrice,
   inStockOnly,
   sortBy,
@@ -263,7 +244,6 @@ const filteredProducts = useMemo(() => {
 
   const activeFilterCount =
     selectedCategories.length +
-    selectedBrands.length +
     (inStockOnly ? 1 : 0) +
     (effectiveMaxPrice < highestPrice ? 1 : 0);
 
@@ -354,39 +334,6 @@ const filteredProducts = useMemo(() => {
         </div>
       </div>
 
-      {/* BRANDS */}
-      <div className="border-t border-white/10 pt-7">
-        <h3 className="mb-5 text-sm font-semibold text-white">
-          Brands
-        </h3>
-
-        <div className="max-h-56 space-y-4 overflow-y-auto pr-2">
-          {brands.map((brand) => (
-            <label
-              key={brand}
-              className="group flex cursor-pointer items-center gap-3"
-            >
-              <input
-                type="checkbox"
-                checked={selectedBrands.includes(brand)}
-                onChange={() => toggleBrand(brand)}
-                className="h-4 w-4 cursor-pointer rounded-none accent-blue-600"
-              />
-
-              <span className="text-sm text-zinc-400 transition group-hover:text-white">
-                {brand}
-              </span>
-            </label>
-          ))}
-
-          {brands.length === 0 && (
-            <p className="text-sm text-zinc-500">
-              No brands found.
-            </p>
-          )}
-        </div>
-      </div>
-
       {/* AVAILABILITY */}
       <div className="border-t border-white/10 pt-7">
         <h3 className="mb-5 text-sm font-semibold text-white">
@@ -422,12 +369,12 @@ const filteredProducts = useMemo(() => {
   return (
     <main className="min-h-screen bg-[#090b10] text-white">
 
-      <section className="mx-auto max-w-[1600px] px-4 py-14 sm:px-6 lg:px-10 lg:py-20">
+      <section className="page-wrapper py-14 lg:py-20">
 
         {/* PAGE HEADING */}
-        <div className="mb-10 flex flex-col gap-6 border-b border-white/10 pb-8 md:flex-row md:items-end md:justify-between">
+        {/* <div className="mb-10 flex flex-col gap-6 border-b border-white/10 pb-8 md:flex-row md:items-end md:justify-between">
 
-          <div className="max-w-2xl">
+           <div className="max-w-2xl">
             <div className="mb-4 flex items-center gap-3">
               <span className="h-[2px] w-8 bg-blue-500" />
 
@@ -448,7 +395,7 @@ const filteredProducts = useMemo(() => {
               gaming gear, components, and accessories
               built to power your setup.
             </p>
-          </div>
+          </div> 
 
           {!loading && !error && (
             <div className="flex items-center gap-5 sm:gap-8">
@@ -484,7 +431,7 @@ const filteredProducts = useMemo(() => {
               </div>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* LOADING */}
         {loading && <LoadingScreen />}
@@ -522,6 +469,13 @@ const filteredProducts = useMemo(() => {
 
             {/* PRODUCT CONTENT */}
             <div className="min-w-0 flex-1">
+              {selectedCategories.length > 0 && (
+                <h1 className="mb-4 text-2xl font-semibold">
+                  {selectedCategories.map((value) =>
+                    categories.find((category) => category.value === value)?.label || value
+                  ).join(", ")}
+                </h1>
+              )}
 
               {/* SORT BAR */}
               <div className="mb-7 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-5">

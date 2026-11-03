@@ -103,7 +103,7 @@ export default function UserData() {
   if (loading) {
     return (
       <div
-        className="h-10 w-10 animate-pulse rounded-lg bg-white/5 sm:w-28"
+        className="h-11 w-11 animate-pulse rounded-lg bg-white/5 sm:w-28"
         aria-label="Loading account"
       />
     );
@@ -115,7 +115,7 @@ export default function UserData() {
       <Link
         to="/login"
         aria-label="Login to your account"
-        className="group flex h-10 items-center justify-center gap-2 rounded-lg border border-cyan-400/30 bg-cyan-400/10 px-3 text-sm font-semibold text-cyan-400 transition-all duration-200 hover:border-cyan-400 hover:bg-cyan-400 hover:text-[#090a0d] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 sm:px-4"
+        className="group flex h-11 w-11 items-center justify-center gap-2 rounded-xl sm:w-auto border border-cyan-400/30 bg-cyan-400/10 text-sm font-semibold text-cyan-400 transition-all duration-200 hover:border-cyan-400 hover:bg-cyan-400 hover:text-[#090a0d] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 sm:px-4"
       >
         <FiLogIn
           size={17}
@@ -168,7 +168,7 @@ export default function UserData() {
         aria-haspopup="true"
         aria-controls="user-account-dropdown"
         onClick={() => setMenuOpen((prev) => !prev)}
-        className={`group flex h-10 items-center gap-2 rounded-lg border px-1.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 sm:px-2.5 ${
+        className={`group flex h-11 w-11 items-center justify-center gap-2 rounded-xl border md:w-auto transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 md:px-2.5 ${
           menuOpen
             ? "border-cyan-400/40 bg-cyan-400/10"
             : "border-white/10 bg-white/[0.03] hover:border-cyan-400/30 hover:bg-white/[0.06]"
@@ -199,7 +199,7 @@ export default function UserData() {
       {menuOpen && (
         <div
           id="user-account-dropdown"
-          className="absolute right-0 top-[calc(100%+12px)] z-[100] w-[260px] overflow-hidden rounded-xl border border-white/10 bg-[#11141a] shadow-2xl shadow-black/60"
+          className="absolute right-0 top-[calc(100%+12px)] z-[100] w-[min(260px,calc(100vw-5rem))] overflow-hidden rounded-xl border border-white/10 bg-[#11141a] shadow-2xl shadow-black/60"
         >
           {/* Account profile header */}
           <div className="border-b border-white/10 bg-[#151a20] px-4 py-4">

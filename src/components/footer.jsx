@@ -9,7 +9,10 @@ import {
 
 const shopLinks = [
   { label: "All Products", to: "/products" },
-  { label: "Laptops", to: "/products?category=laptops" },
+  { label: "Laptops", to: "/products?category=laptop" },
+  { label: "Desktop", to: "/products?category=desktop" },
+  { label: "Gaming", to: "/products?category=gaming" },
+  { label: "Workstation", to: "/products?category=workstation" },
   {
     label: "Graphics Cards",
     to: "/products?category=graphic%20card",
@@ -19,7 +22,7 @@ const shopLinks = [
     to: "/products?category=processor",
   },
   { label: "Monitors", to: "/products?category=monitor" },
-  { label: "Accessories", to: "/products?category=keyboard" },
+  { label: "Accessories", to: "/products?category=accessories" },
 ];
 
 const exploreLinks = [
@@ -29,13 +32,27 @@ const exploreLinks = [
   { label: "Shopping Cart", to: "/cart" },
 ];
 
+function FooterLink(props) {
+  function scrollToPageStart(event) {
+    if (event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+  }
+
+  return <Link {...props} onClick={scrollToPageStart} />;
+}
+
 export default function Footer() {
+  const accountLinks = localStorage.getItem("token")
+    ? [{ label: "My Orders", to: "/my-orders" }, { label: "Account Settings", to: "/settings" }]
+    : [{ label: "Log In", to: "/login" }, { label: "Register", to: "/register" }];
+
   return (
     <footer className="border-t border-blue-500/30 bg-[#090b10] text-white">
 
       {/* Top CTA */}
       <div className="border-b border-white/10 bg-[#10141d]">
-        <div className="mx-auto flex max-w-[1600px] flex-col gap-6 px-5 py-9 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-10">
+        <div className="page-wrapper flex flex-col gap-6 py-9 md:flex-row md:items-center md:justify-between">
 
           <div>
             <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-blue-400">
@@ -52,26 +69,26 @@ export default function Footer() {
             </p>
           </div>
 
-          <Link
+          <FooterLink
             to="/products"
             className="group inline-flex shrink-0 items-center justify-center gap-3 self-start bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-blue-500 md:self-auto"
           >
             Explore Products
             <FiArrowUpRight className="text-lg transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-          </Link>
+          </FooterLink>
 
         </div>
       </div>
 
       {/* Main Footer */}
-      <div className="mx-auto max-w-[1600px] px-5 py-12 sm:px-6 lg:px-10 lg:py-16">
+      <div className="page-wrapper py-12 lg:py-16">
 
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr] lg:gap-12">
 
           {/* Brand */}
           <div>
 
-            <Link
+            <FooterLink
               to="/"
               className="inline-flex items-center gap-2"
             >
@@ -80,7 +97,7 @@ export default function Footer() {
               <span className="text-2xl font-bold tracking-tight text-white">
                 i<span className="text-blue-400">Computers</span>
               </span>
-            </Link>
+            </FooterLink>
 
             <p className="mt-5 max-w-sm text-sm leading-7 text-zinc-400">
               Your destination for premium computing,
@@ -111,13 +128,13 @@ export default function Footer() {
             <ul className="space-y-4">
               {shopLinks.map((item) => (
                 <li key={item.label}>
-                  <Link
+                  <FooterLink
                     to={item.to}
                     className="group inline-flex items-center gap-2 text-sm text-zinc-400 transition-colors duration-200 hover:text-blue-400"
                   >
                     <FiArrowRight className="text-xs text-blue-500 opacity-0 transition-all duration-200 group-hover:opacity-100" />
                     {item.label}
-                  </Link>
+                  </FooterLink>
                 </li>
               ))}
             </ul>
@@ -132,15 +149,15 @@ export default function Footer() {
             <div className="mb-6 h-[2px] w-8 bg-blue-500" />
 
             <ul className="space-y-4">
-              {exploreLinks.map((item) => (
+              {[...exploreLinks, ...accountLinks].map((item) => (
                 <li key={item.label}>
-                  <Link
+                  <FooterLink
                     to={item.to}
                     className="group inline-flex items-center gap-2 text-sm text-zinc-400 transition-colors duration-200 hover:text-blue-400"
                   >
                     <FiArrowRight className="text-xs text-blue-500 opacity-0 transition-all duration-200 group-hover:opacity-100" />
                     {item.label}
-                  </Link>
+                  </FooterLink>
                 </li>
               ))}
             </ul>
@@ -160,14 +177,14 @@ export default function Footer() {
               Our team is here to help.
             </p>
 
-            <Link
+            <FooterLink
               to="/contact-us"
               className="mt-6 inline-flex items-center gap-3 border border-white/15 px-4 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:border-blue-500 hover:bg-blue-500/10 hover:text-blue-400"
             >
               <FiMail className="text-blue-400" />
               Contact Our Team
               <FiArrowUpRight />
-            </Link>
+            </FooterLink>
           </div>
 
         </div>

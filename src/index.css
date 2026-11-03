@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@utility page-wrapper {
+  @apply mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-10;
+}
+
 @theme {
   --color-primary : #f4f4f4;
   --color-secondary : #181800;

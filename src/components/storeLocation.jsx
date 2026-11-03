@@ -18,8 +18,8 @@ export default function StoreLocation() {
   );
 
   return (
-    <section className="bg-[#09090b] px-5 py-20 sm:px-8 lg:px-12">
-      <div className="mx-auto max-w-7xl">
+    <section className="bg-[#09090b] py-20">
+      <div className="page-wrapper">
         <div className="mb-10">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-blue-400">
             FIND OUR STORE
