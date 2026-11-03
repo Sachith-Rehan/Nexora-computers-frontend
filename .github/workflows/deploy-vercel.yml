@@ -39,10 +39,10 @@ jobs:
 
       - name: Create Production Environment File
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URI }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
           : "${VITE_API_URL:?Missing API URL secret}"
-          printf 'VITE_API_URL=%s\n' "$VITE_API_URL" > .env.production.local
+          printf "$VITE_API_URL" > .env.production.local
           chmod 600 .env.production.local
 
       - name: Build Frontend
