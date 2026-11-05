@@ -19,6 +19,7 @@ import {
   IoPersonAddOutline,
   IoChevronForwardOutline,
   IoShieldCheckmarkOutline,
+  IoLogOutOutline,
 } from "react-icons/io5";
 
 import AdminProductPage from "./admin/adminProductPage";
@@ -70,6 +71,7 @@ export default function AdminPage() {
   }, [pathname]);
   const [user, setUser] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
 
   const navigate = useNavigate();
 
@@ -100,13 +102,22 @@ export default function AdminPage() {
                 
       }
     }
-  , [])
+  , [navigate])
 
  
 
   const handleCloseSidebar = () => {
     setIsSidebarOpen(false);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    setIsSidebarOpen(false);
+    navigate("/", { replace: true });
+  };
+
+  const profileName = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "Administrator";
 
   return (
 
@@ -190,7 +201,7 @@ export default function AdminPage() {
         </div>
 
         {/* Sidebar Navigation */}
-        <div className="flex-1 px-4 py-8 overflow-y-auto">
+        <div className="min-h-0 flex-1 px-4 py-8 overflow-y-auto">
 
           <p
             className="px-4 mb-5 text-[11px]
@@ -247,30 +258,43 @@ export default function AdminPage() {
         </div>
 
         {/* Sidebar Footer */}
-        <div className="p-4 border-t border-white/10">
+        <div className="shrink-0 p-4 border-t border-white/10">
           <div
             className="flex items-center gap-3
             p-3 rounded-xl bg-white/[0.04]"
           >
             <div
               className="w-11 h-11 shrink-0
-              rounded-full bg-blue-500/15
+              overflow-hidden rounded-full bg-blue-500/15
               flex items-center justify-center
               text-blue-400"
             >
-              <IoShieldCheckmarkOutline size={23} />
+              {user?.image && !avatarError ? (
+                <img src={user.image} alt="" onError={() => setAvatarError(true)} className="h-full w-full object-cover" />
+              ) : (
+                <IoShieldCheckmarkOutline size={23} aria-hidden="true" />
+              )}
             </div>
 
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold text-white">
-                Admin Panel
+            <div className="min-w-0 flex flex-col">
+              <span className="truncate text-sm font-semibold text-white" title={profileName}>
+                {user ? profileName : "Loading profile…"}
               </span>
 
-              <span className="text-xs text-slate-500">
-                Store Management
+              <span className="truncate text-xs text-slate-400" title={user?.email}>
+                {user?.email}
               </span>
+              <span className="mt-1 text-xs text-blue-400">Administrator</span>
             </div>
           </div>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-red-400/20 px-4 py-3 text-sm font-medium text-red-300 transition-colors hover:bg-red-500/10 hover:text-red-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
+          >
+            <IoLogOutOutline size={20} aria-hidden="true" />
+            Log out
+          </button>
         </div>
       </aside>
 
